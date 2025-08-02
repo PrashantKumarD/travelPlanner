@@ -29,7 +29,7 @@ import Footer from '../view-trip/components/Footer';
 
 function CreateTrip() {
   const [place,setPlace]=useState()
-  const [formData,setFormData]=useState({ noOfDays: 1 })
+  const [formData,setFormData]=useState({ noOfDays: '' })
   const [openDialog,setOpenDialog]=useState(false);
   const [loading,setLoading]=useState(false);
 
@@ -51,10 +51,12 @@ function CreateTrip() {
         return; // Don't update the state if invalid
       }
     }
-    setFormData({
-      ...formData,
+    
+    // Always update the state with the actual value
+    setFormData(prevData => ({
+      ...prevData,
       [name]: value
-    });
+    }));
   }
 
   useEffect(()=>{
@@ -253,16 +255,12 @@ function CreateTrip() {
               type="number"
               min={1}
               max={5}
-              value={formData.noOfDays || ''}
+              value={formData.noOfDays}
               onChange={e => {
                 const val = e.target.value;
-                if (val === '') {
-                  handleInputChange('noOfDays', '');
-                } else {
-                  const numVal = parseInt(val, 10);
-                  if (!isNaN(numVal)) {
-                    handleInputChange('noOfDays', numVal);
-                  }
+                // Allow empty string or valid numbers
+                if (val === '' || (!isNaN(val) && val.length <= 2)) {
+                  handleInputChange('noOfDays', val);
                 }
               }}
             />
